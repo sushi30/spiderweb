@@ -1,47 +1,23 @@
-import 'reflect-metadata';
+import express from "express";
+import cors from "cors";
 
-import { bootstrapMicroframework } from 'microframework-w3tec';
+import errorHandler from "./middleware/errorHandler";
+import requestLogger from "./middleware/requestLogger";
+import hello from "./root/hello";
 
-import { banner } from './lib/banner';
-import { Logger } from './lib/logger';
-import { eventDispatchLoader } from './loaders/eventDispatchLoader';
-import { expressLoader } from './loaders/expressLoader';
-import { graphqlLoader } from './loaders/graphqlLoader';
-import { homeLoader } from './loaders/homeLoader';
-import { iocLoader } from './loaders/iocLoader';
-import { monitorLoader } from './loaders/monitorLoader';
-import { publicLoader } from './loaders/publicLoader';
-import { swaggerLoader } from './loaders/swaggerLoader';
-import { typeormLoader } from './loaders/typeormLoader';
-import { winstonLoader } from './loaders/winstonLoader';
+const app = express();
 
-/**
- * EXPRESS TYPESCRIPT BOILERPLATE
- * ----------------------------------------
- *
- * This is a boilerplate for Node.js Application written in TypeScript.
- * The basic layer of this app is express. For further information visit
- * the 'README.md' file.
- */
-const log = new Logger(__filename);
+const corsMiddleware = (domain: string) =>
+  cors({
+    allowedHeaders: "content-type, access_token, etag",
+    origin: domain,
+    credentials: true
+  });
 
-bootstrapMicroframework({
-    /**
-     * Loader is a place where you can configure all your modules during microframework
-     * bootstrap process. All loaders are executed one by one in a sequential order.
-     */
-    loaders: [
-        winstonLoader,
-        iocLoader,
-        eventDispatchLoader,
-        typeormLoader,
-        expressLoader,
-        swaggerLoader,
-        monitorLoader,
-        homeLoader,
-        publicLoader,
-        graphqlLoader,
-    ],
-})
-    .then(() => banner(log))
-    .catch(error => log.error('Application is crashed: ' + error));
+app.use(corsMiddleware(process.env.DOMAIN));
+app.use(requestLogger());
+app.use(express.json({}));
+app.use("/v1/hello", hello);
+app.use(errorHandler(Number.parseInt(process.env.DEBUG)));
+
+export default app;
