@@ -1,0 +1,14 @@
+version: '3'
+services:
+  mysql:
+    image: mysql:5.7.29
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+  neo4j:
+    image: neo4j:3.5.3
+    ports:
+     - "7687:7687"
+     - "7474:7474"
+     - "7473:7473"
