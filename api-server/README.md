@@ -1,3 +1,6 @@
+### Dependencies
+- node
+
 ### Run locally
 ```shell script
 cd api-server
