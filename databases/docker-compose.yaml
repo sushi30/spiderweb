@@ -3,12 +3,12 @@ services:
   mysql:
     image: mysql:5.7.29
     ports:
-      - "3306:3306"
+      - "${MYSQL_PORT}:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
   neo4j:
     image: neo4j:3.5.3
     ports:
-     - "7687:7687"
-     - "7474:7474"
-     - "7473:7473"
+     - "${BOLT_PORT}:7687"
+     - "${NEO4J_HTTP_PORT}:7474"
+     - "${NEO4J_HTTPS_PORT}:7473"
