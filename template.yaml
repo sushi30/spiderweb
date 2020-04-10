@@ -5,6 +5,7 @@ Description: Deployment of all resources for the spirderweb
 Parameters:
   env:
     Type: String
+    Default: dev
     AllowedValues:
       - dev
       - prod

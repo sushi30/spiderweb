@@ -4,14 +4,23 @@ Parameters:
     AllowedValues:
       - dev
       - prod
+
 Resources:
-  AirflowExecution:
+  AirflowArtifactsBucket:
     Type: AWS::S3::Bucket
     Properties:
-      Name: !Join:
+      BucketName: !Join
         - "-"
         - - spiderweb-airflow
           - !Ref env
       LifecycleConfiguration:
-        - ExpirationInDays: 7
-          Status: Enabled
+        Rules:
+          - ExpirationInDays: 7
+            Status: Enabled
+
+Outputs:
+  ExecutionBucket:
+    Description: Bucket that stores intermediate values for airflow
+    Value: !Ref AirflowArtifactsBucket
+    Export:
+      Name: !Sub "${AWS::StackName}-AirflowArtifacts"
