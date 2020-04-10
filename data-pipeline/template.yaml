@@ -1,0 +1,17 @@
+Parameters:
+  env:
+    Type: String
+    AllowedValues:
+      - dev
+      - prod
+Resources:
+  AirflowExecution:
+    Type: AWS::S3::Bucket
+    Properties:
+      Name: !Join:
+        - "-"
+        - - spiderweb-airflow
+          - !Ref env
+      LifecycleConfiguration:
+        - ExpirationInDays: 7
+          Status: Enabled

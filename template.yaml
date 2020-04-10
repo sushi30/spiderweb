@@ -1,0 +1,18 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: Deployment of all resources for the spirderweb
+
+Parameters:
+  env:
+    Type: String
+    AllowedValues:
+      - dev
+      - prod
+
+Resources:
+  DataPipeline:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: ./data-pipeline/template.yaml
+      Parameters:
+        env: !Ref env
