@@ -1,0 +1,19 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: Deployment of all resources for the spirderweb
+
+Resources:
+  BuildArtifactsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      LifecycleConfiguration:
+        Rules:
+          - ExpirationInDays: 7
+            Status: Enabled
+
+Outputs:
+  BuildArtifcatsBucket:
+    Description: Bucket that stores artifcats for build process
+    Value: !Ref BuildArtifactsBucket
+    Export:
+      Name: !Sub "${AWS::StackName}-BuildArtifacts"
