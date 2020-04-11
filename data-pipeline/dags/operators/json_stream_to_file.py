@@ -16,14 +16,24 @@ def hash_json(o):
 def handler(source_url, dest_dir, execution_date, prev_execution_date, **kwags):
     r = requests.get(source_url, stream=True)
     prev_execution_date = prev_execution_date or (execution_date - timedelta(days=1))
+    max_date = datetime(1900, 1, 1)
+    min_date = datetime(2100, 1, 1)
     for o in json_stream_from_request(r):
         date = datetime.fromisoformat(o["date"])
+        if date > max_date:
+            print("max_date", date)
+            max_date = date
+        if date < min_date:
+            print("min_date", date)
+            min_date = date
         if execution_date < date:
             continue
         elif prev_execution_date < date < execution_date:
             os.makedirs(f"./artifacts/{dest_dir}", exist_ok=True)
             h = hash_json(o)
             with open(f"./artifacts/{dest_dir}/{h}.json", "w") as fp:
-                json.dump(o, fp)
+                json.dump(o, fp, ensure_ascii=False)
+        elif date < prev_execution_date - timedelta(days=365):
+            break
         else:
             continue
