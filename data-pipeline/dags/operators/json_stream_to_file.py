@@ -4,7 +4,7 @@ import json
 import os
 
 import requests
-from operators.json_stream import json_stream_from_request
+from utils.json_stream import json_stream_from_request
 
 
 def hash_json(o):
@@ -29,9 +29,10 @@ def handler(source_url, dest_dir, execution_date, prev_execution_date, **kwags):
         if execution_date < date:
             continue
         elif prev_execution_date < date < execution_date:
-            os.makedirs(f"./artifacts/{dest_dir}", exist_ok=True)
+            print("writing date", date)
+            os.makedirs(dest_dir, exist_ok=True)
             h = hash_json(o)
-            with open(f"./artifacts/{dest_dir}/{h}.json", "w") as fp:
+            with open(os.path.join(dest_dir, h + ".json"), "w") as fp:
                 json.dump(o, fp, ensure_ascii=False)
         elif date < prev_execution_date - timedelta(days=365):
             break
