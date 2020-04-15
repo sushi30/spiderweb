@@ -14,7 +14,7 @@ We beleive that transparency enables building a stringer ommunity. This tool can
 4. profit💸
 
 ## Table of Contents
-1. [Deployment](./DEPLOYMENT.md)
+1. [Deployment](./docs/DEPLOYMENT.md)
 
 ## Project Structure
 
