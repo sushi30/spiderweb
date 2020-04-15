@@ -19,7 +19,7 @@ def create_path(path_id, dir_name, source_url, DbModel):
     )
 
     insert_to_sqlite = PythonOperator(
-        task_id=f"{path_id}_json_to_sqlit",
+        task_id=f"{path_id}_json_to_sqlite",
         python_callable=json_to_sqlite,
         provide_context=True,
         op_kwargs={
