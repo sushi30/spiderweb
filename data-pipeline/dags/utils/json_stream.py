@@ -28,10 +28,13 @@ def json_stream(fp):
         yield json.loads(item)
 
 
-def json_stream_from_request(response):
+def json_stream_from_request(response, buffer_size=1024 * 2):
     try:
         for o in json_stream(
-            FileFromGenerator(response.iter_content(decode_unicode=True, chunk_size=1))
+            FileFromGenerator(
+                response.iter_content(decode_unicode=True, chunk_size=1),
+                size=buffer_size,
+            )
         ):
             yield o
     except StopIteration:
@@ -39,10 +42,11 @@ def json_stream_from_request(response):
 
 
 class FileFromGenerator:
-    def __init__(self, generator):
+    def __init__(self, generator, size=1024 * 2):
         self.generator = generator
         self.buffer = io.StringIO()
         self.len = 0
+        self.size = size
 
     def read(self, n):
         if n != 1:
@@ -57,4 +61,8 @@ class FileFromGenerator:
             self.len += len(next_chunk)
             self.buffer.seek(self.len - len(next_chunk))
             res += self.buffer.read(1)
+        if self.len > self.size:
+            tmp = self.buffer.read()
+            self.buffer = io.StringIO(tmp)
+            self.len = len(tmp)
         return res
