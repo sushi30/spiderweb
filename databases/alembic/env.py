@@ -5,10 +5,10 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from alembic import context
 
-sys.path.append("../data-pipeline/dags")
+sys.path.append("../data-pipeline/src/lib")
 
-from models.sql import Base
-from models.sql import person, firm, maya_stakeholders
+from models.sql import *
+from models.sql.normalized import *
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
