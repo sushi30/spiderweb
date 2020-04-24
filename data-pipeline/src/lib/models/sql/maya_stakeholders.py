@@ -1,12 +1,14 @@
 from datetime import datetime
 
-from . import Base, WtihTimestamps
+from utils.dictionary import rename
+from . import Base, WithTimestamps, DbModel
 from sqlalchemy import Column, DateTime, Date, String, Integer, Float, Text
 
 
-class MayaStakeholder(WtihTimestamps, Base):
+class MayaStakeholder(WithTimestamps, DbModel, Base):
     __tablename__ = "maya_stakeholder"
 
+    created_at = Column(DateTime, nullable=False, primary_key=True)
     AccumulateHoldings = Column(String, default=None)
     AsmachtaDuachMeshubash = Column(String, default=None)
     IsRequiredToReportChange = Column(String, default=None)
@@ -40,7 +42,7 @@ class MayaStakeholder(WtihTimestamps, Base):
     PreviousCompanyNames = Column(String, default=None)
     PumbiLoPumbi = Column(String, default=None)
     StockName = Column(String, primary_key=True)
-    SugMisparZihui = Column(String, default=None)
+    SugMisparZihui = Column(String, primary_key=True, default=None)
     TreasuryShares = Column(String, default=None)
     VotePower = Column(Float, default=None)
     VotePower_Dilul = Column(Float, default=None)
@@ -48,7 +50,7 @@ class MayaStakeholder(WtihTimestamps, Base):
     date = Column(DateTime, default=None)
     fix_for = Column(String, default=None)
     fixed_by = Column(String, default=None)
-    id = Column(String, primary_key=True)
+    id = Column(String, default=None)
     next_doc = Column(String, default=None)
     prev_doc = Column(String, default=None)
     stakeholder_type = Column(String, default=None)
@@ -57,8 +59,7 @@ class MayaStakeholder(WtihTimestamps, Base):
 
     @classmethod
     def from_dict(cls, dictionary, **kwargs):
-        dictionary["Date2"] = dictionary["Date"]
-        del dictionary["Date"]
-        dictionary["date"] = datetime.fromisoformat(r["date"])
-        dictionary["Date2"] = datetime.strptime(r["Date2"], "%d/%m/%Y")
-        return cls.__init__(**dictionary, **kwargs)
+        dictionary = rename(dictionary, "Date", "Date2")
+        dictionary["date"] = datetime.fromisoformat(dictionary["date"])
+        dictionary["Date2"] = datetime.strptime(dictionary["Date2"], "%d/%m/%Y")
+        return cls(**dictionary, **kwargs)

@@ -2,7 +2,10 @@ from datetime import datetime
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 
-from models.stakeholders import MayaStakeholder
+from models.sql.firm import Firm
+from models.sql.person import Person
+from models.sql.maya_stakeholders import MayaStakeholder
+from operators.normalize_sqlite import handler as normalize_sqlite
 from operators.json_stream_to_file import handler as json_stream_to_file
 from operators.json_to_sqlite import handler as json_to_sqlite
 
@@ -28,7 +31,19 @@ def create_path(path_id, source_url, DbModel):
         },
     )
 
-    create_files >> insert_to_sqlite
+    normalizers = [
+        PythonOperator(
+            task_concurrency=2,
+            retries=3,
+            task_id=f"{path_id}_normalize_{model.__tablename__}",
+            python_callable=normalize_sqlite,
+            provide_context=True,
+            op_kwargs={"SourceModel": DbModel, "TargetModel": model},
+        )
+        for model in [Firm, Person]
+    ]
+
+    create_files >> insert_to_sqlite >> normalizers
 
 
 with DAG(
