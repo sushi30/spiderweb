@@ -22,6 +22,8 @@ def handler(source_dir, Model, execution_date, **kwargs):
     session = Session()
     return iteration_handler(
         os.listdir(source_dir),
-        lambda x: process_record(session, execution_date, Model, source_dir + x),
+        lambda x: process_record(
+            session, execution_date, Model, os.path.join(source_dir, x)
+        ),
         lambda: session.rollback,
     )
