@@ -2,12 +2,12 @@ from datetime import datetime
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 
-from models.sql.firm import Firm
-from models.sql.person import Person
-from models.sql.maya_stakeholders import MayaStakeholder
 from operators.normalize_sqlite import handler as normalize_sqlite
 from operators.json_stream_to_file import handler as json_stream_to_file
 from operators.json_to_sqlite import handler as json_to_sqlite
+from models.sql.maya_stakeholders import MayaStakeholder
+from models.sql.normalized.firm import Firm
+from models.sql.normalized.person import Person
 
 
 def create_path(path_id, source_url, DbModel):
