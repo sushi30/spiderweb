@@ -1,3 +1,7 @@
+from sqlalchemy import inspect
+from . import Base
+
+
 class DbModel:
     def get_identifier(self):
         pk = tuple([c.name for c in inspect(self.__class__).primary_key])
@@ -9,7 +13,7 @@ class DbModel:
         return list(columns - pk)
 
     def insert_or_update(self, session):
-        existing = session.query(self.__class__).get(row.get_identifier())
+        existing = session.query(self.__class__).get(self.get_identifier())
         if existing is None:
             session.add(self)
         else:
