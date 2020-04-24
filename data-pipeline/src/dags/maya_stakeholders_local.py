@@ -1,7 +1,7 @@
 from datetime import datetime
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
-
+from operators.extract_firm_sqlite import handler as extract_firm_sqlite
 from operators.normalize_sqlite import handler as normalize_sqlite
 from operators.json_stream_to_file import handler as json_stream_to_file
 from operators.json_to_sqlite import handler as json_to_sqlite
@@ -43,7 +43,17 @@ def create_path(path_id, source_url, DbModel):
         for model in [Firm, Person]
     ]
 
+    extract_firm = PythonOperator(
+        task_concurrency=2,
+        retries=3,
+        task_id=f"extract_firm",
+        python_callable=extract_firm_sqlite,
+        provide_context=True,
+        op_kwargs={"SourceModel": DbModel},
+    )
+
     create_files >> insert_to_sqlite >> normalizers
+    insert_to_sqlite >> extract_firm
 
 
 with DAG(
