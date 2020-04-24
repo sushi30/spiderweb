@@ -40,4 +40,4 @@ def handler(source_url, dest_dir, execution_date, prev_execution_date, **kwags):
             break
         else:
             continue
-        return success
+    return success
