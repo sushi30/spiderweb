@@ -1,38 +1,27 @@
 from datetime import datetime
 import json
-from logging import warning
 import os
-import traceback
 from airflow.hooks.sqlite_hook import SqliteHook
 from sqlalchemy.orm import sessionmaker
 from models.sql.db_model import DbModel
+from utils.handlers import iteration_handler
 
 
-def process_record(session, execution_date, Model: DbModel, file_content):
-    record = json.loads(file_content)
-    model = Model.from_dict(
-        record, created_at=execution_date, updated_at=datetime.utcnow()
-    )
-    try:
+def process_record(session, execution_date, Model: DbModel, path):
+    with open(path, encoding="utf8") as fp:
+        record = json.load(fp)
+        model = Model.from_dict(
+            record, created_at=execution_date, updated_at=datetime.utcnow()
+        )
         model.insert_or_update(session)
-    except Exception as err:
-        warning(err)
-        session.rollback()
-        pass
 
 
 def handler(source_dir, Model, execution_date, **kwargs):
-    files = os.listdir(source_dir)
     connection = SqliteHook()
     Session = sessionmaker(bind=connection.get_sqlalchemy_engine())
     session = Session()
-    success = 0
-    for file in files:
-        with open(os.path.join(source_dir, file), encoding="utf8") as fp:
-            try:
-                process_record(session, execution_date, Model, fp.read())
-                success += 1
-            except:
-                traceback.print_exc()
-                pass
-    return f"{success}/{len(files)}"
+    return iteration_handler(
+        os.listdir(source_dir),
+        lambda x: process_record(session, execution_date, Model, source_dir + x),
+        lambda: session.rollback,
+    )

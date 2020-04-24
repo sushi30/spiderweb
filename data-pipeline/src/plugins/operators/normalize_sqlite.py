@@ -1,9 +1,8 @@
 from datetime import datetime, timedelta
-from logging import warning
-from typing import List
 from airflow.hooks.sqlite_hook import SqliteHook
 from sqlalchemy.orm import sessionmaker
 from models.sql.db_model import DbModel
+from utils.handlers import iteration_handler
 
 
 def process_record(session, execution_date, TargetModel: DbModel, row):
@@ -19,22 +18,9 @@ def handler(SourceModel, TargetModel, prev_execution_date, execution_date, **kwa
     Session = sessionmaker(
         bind=connection.get_sqlalchemy_engine(), expire_on_commit=False
     )
-    rows: List[DbModel] = (
-        Session()
-        .query(SourceModel)
-        .filter(
-            prev_execution_date <= SourceModel.created_at,
-            SourceModel.created_at < execution_date,
-        )
-    )
     session = Session()
-    success = 0
-    for row in rows:
-        try:
-            process_record(session, execution_date, TargetModel, row)
-            success += 1
-        except Exception as err:
-            warning(err)
-            session.rollback()
-    session.close()
-    return f"{success}/{len(rows)}"
+    return iteration_handler(
+        SourceModel.iterate_rows(Session(), prev_execution_date, execution_date),
+        lambda x: process_record(session, execution_date, TargetModel, x),
+        session.rollback,
+    )
