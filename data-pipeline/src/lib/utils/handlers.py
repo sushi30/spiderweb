@@ -12,4 +12,6 @@ def iteration_handler(iterator, handler, error_callback=None):
         except Exception as err:
             warning(err)
             error_callback()
+    if total != 0 and success == 0:
+        raise Exception("No records were processed successfully")
     return success, total
