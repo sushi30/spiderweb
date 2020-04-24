@@ -4,16 +4,21 @@ from typing import List
 from airflow.hooks.sqlite_hook import SqliteHook
 from sqlalchemy.orm import sessionmaker
 from models.sql.db_model import DbModel
+from models.sql.normalized.firm import Firm
 
 
-def process_record(session, execution_date, TargetModel: DbModel, row):
-    if TargetModel.infer_type(row):
-        TargetModel.from_source(
+def process_record(session, execution_date, SourceModel, row):
+    try:
+        Firm.extract_firm(
             row, created_at=execution_date, updated_at=datetime.utcnow()
         ).insert_or_update(session)
+    except Exception as err:
+        warning(err)
+        session.rollback()
+        pass
 
 
-def handler(SourceModel, TargetModel, prev_execution_date, execution_date, **kwargs):
+def handler(SourceModel, prev_execution_date, execution_date, **kwargs):
     prev_execution_date = prev_execution_date or (execution_date - timedelta(days=1))
     connection = SqliteHook()
     Session = sessionmaker(
@@ -28,13 +33,6 @@ def handler(SourceModel, TargetModel, prev_execution_date, execution_date, **kwa
         )
     )
     session = Session()
-    success = 0
     for row in rows:
-        try:
-            process_record(session, execution_date, TargetModel, row)
-            success += 1
-        except Exception as err:
-            warning(err)
-            session.rollback()
+        process_record(session, execution_date, SourceModel, row)
     session.close()
-    return f"{success}/{len(rows)}"

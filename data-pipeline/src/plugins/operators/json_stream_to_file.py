@@ -18,6 +18,7 @@ def handler(source_url, dest_dir, execution_date, prev_execution_date, **kwags):
     prev_execution_date = prev_execution_date or (execution_date - timedelta(days=1))
     max_date = datetime(1900, 1, 1)
     min_date = datetime(2100, 1, 1)
+    success = 0
     for o in json_stream_from_request(r):
         date = datetime.fromisoformat(o["date"])
         if date > max_date:
@@ -34,7 +35,9 @@ def handler(source_url, dest_dir, execution_date, prev_execution_date, **kwags):
             h = hash_json(o)
             with open(os.path.join(dest_dir, h + ".json"), "w") as fp:
                 json.dump(o, fp, ensure_ascii=False)
+            success += 1
         elif date < prev_execution_date - timedelta(days=365):
             break
         else:
             continue
+        return success

@@ -5,7 +5,7 @@ import os
 import traceback
 from airflow.hooks.sqlite_hook import SqliteHook
 from sqlalchemy.orm import sessionmaker
-from models.sql import DbModel
+from models.sql.db_model import DbModel
 
 
 def process_record(session, execution_date, Model: DbModel, file_content):
@@ -26,10 +26,13 @@ def handler(source_dir, Model, execution_date, **kwargs):
     connection = SqliteHook()
     Session = sessionmaker(bind=connection.get_sqlalchemy_engine())
     session = Session()
+    success = 0
     for file in files:
         with open(os.path.join(source_dir, file), encoding="utf8") as fp:
             try:
                 process_record(session, execution_date, Model, fp.read())
+                success += 1
             except:
                 traceback.print_exc()
                 pass
+    return f"{success}/{len(files)}"
