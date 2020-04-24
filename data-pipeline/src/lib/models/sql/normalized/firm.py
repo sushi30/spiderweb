@@ -54,7 +54,7 @@ class Firm(WithTimestamps, WithUUID, DbModel, Base):
                 "HEBREW_NAME": row.CompanyName,
                 "ENGLISH_NAME": row.CompanyNameEn,
                 "ID": row.HeaderMisparBaRasham,
-                "ID_TYPE": "israel_stock_exchange",
+                "ID_TYPE": "israeli_company_registrar",
             }
             return cls(**props, **kwargs)
         else:
