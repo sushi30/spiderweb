@@ -24,7 +24,6 @@ def process_record(session, execution_date, SourceModel, TargetModel: DbModel, r
 def handler(SourceModel, TargetModel, prev_execution_date, execution_date, **kwargs):
     prev_execution_date = prev_execution_date or (execution_date - timedelta(days=1))
     connection = SqliteHook()
-    print(connection.get_uri())
     Session = sessionmaker(
         bind=connection.get_sqlalchemy_engine(), expire_on_commit=False
     )
