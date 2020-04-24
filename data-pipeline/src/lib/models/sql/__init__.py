@@ -8,6 +8,13 @@ class WithTimestamps:
     created_at = Column(DateTime, nullable=False)
     updated_at = Column(DateTime, nullable=False)
 
+    @classmethod
+    def iterate_rows(cls, session, start_inclusive, end):
+        for row in session.query(cls).filter(
+            start_inclusive <= cls.created_at, cls.created_at < end
+        ):
+            yield row
+
 
 class WithUUID:
     UUID = Column(String(36))
