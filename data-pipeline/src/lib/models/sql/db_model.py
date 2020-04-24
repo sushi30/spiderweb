@@ -18,14 +18,15 @@ class DbModel:
             session.add(self)
         else:
             for column in self.update_columns():
-                existing.__setattr__(column, self.__getattribute__(column))
+                if self.__getattribute__(column) is not None:
+                    existing.__setattr__(column, self.__getattribute__(column))
         session.commit()
 
     def from_dict(self, d: dict, **kwargs):
         raise NotImplemented
 
     @classmethod
-    def from_source(cls, model, row: Base, **kwargs):
+    def from_source(cls, row: Base, **kwargs):
         return None
 
     @classmethod
