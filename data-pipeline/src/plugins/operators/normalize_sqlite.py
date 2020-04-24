@@ -38,5 +38,5 @@ def handler(SourceModel, TargetModel, prev_execution_date, execution_date, **kwa
     )
     session = Session()
     for row in rows:
-        process_record(session, execution_date, TargetModel, row)
+        process_record(session, execution_date, SourceModel, TargetModel, row)
     session.close()
