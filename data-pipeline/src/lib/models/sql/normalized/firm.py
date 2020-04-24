@@ -20,8 +20,8 @@ class Firm(WithTimestamps, WithUUID, DbModel, Base):
         return uuid5(NAME_SPACE, self.ID_TYPE + self.ID)
 
     @classmethod
-    def from_source(cls, source: type, row: MayaStakeholder, **kwargs):
-        if source.__name__ == "MayaStakeholder":
+    def from_source(cls, row: MayaStakeholder, **kwargs):
+        if row.__class__.__name__ == "MayaStakeholder":
             id_type = ID_TYPE_DICT[row.SugMisparZihui]
             return cls(
                 UUID=str(uuid5(NAME_SPACE, id_type + row.MisparZihui)),
@@ -32,7 +32,7 @@ class Firm(WithTimestamps, WithUUID, DbModel, Base):
                 **kwargs
             )
         else:
-            raise Exception("unknown source: " + source.__name__)
+            raise Exception("unknown source: " + row.__class__.__name__)
 
     @classmethod
     def infer_type(cls, row: MayaStakeholder):
@@ -45,3 +45,17 @@ class Firm(WithTimestamps, WithUUID, DbModel, Base):
             return True
         else:
             return False
+
+    @classmethod
+    def extract_firm(cls, row: MayaStakeholder, **kwargs):
+        if row.__class__.__name__ == "MayaStakeholder":
+            props = {
+                "UUID": str(uuid5(NAME_SPACE, row.HeaderMisparBaRasham)),
+                "HEBREW_NAME": row.CompanyName,
+                "ENGLISH_NAME": row.CompanyNameEn,
+                "ID": row.HeaderMisparBaRasham,
+                "ID_TYPE": "israel_stock_exchange",
+            }
+            return cls(**props, **kwargs)
+        else:
+            raise Exception("unknown source: " + row.__class__.__name__)
