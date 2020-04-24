@@ -1,8 +1,10 @@
 from datetime import datetime
 
 from utils.dictionary import rename
-from . import Base, WithTimestamps, DbModel
+from . import Base, WithTimestamps
 from sqlalchemy import Column, DateTime, Date, String, Integer, Float, Text
+
+from .db_model import DbModel
 
 
 class MayaStakeholder(WithTimestamps, DbModel, Base):

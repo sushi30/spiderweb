@@ -1,8 +1,9 @@
 from uuid import UUID, uuid5
 from sqlalchemy import Column, String
-from . import Base, WithTimestamps, WithUUID, DbModel
-from .constants import ID_TYPE_DICT
-from .maya_stakeholders import MayaStakeholder
+from .. import Base, WithTimestamps, WithUUID
+from ..constants import ID_TYPE_DICT
+from ..db_model import DbModel
+from ..maya_stakeholders import MayaStakeholder
 
 NAME_SPACE = UUID("0468c360-3ab5-46a1-ae34-466b6b7b808c")
 
