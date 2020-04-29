@@ -12,15 +12,14 @@ def process_record(session, execution_date, TargetModel: DbModel, row):
         ).insert_or_update(session)
 
 
-def handler(SourceModel, TargetModel, prev_execution_date, execution_date, **kwargs):
-    prev_execution_date = prev_execution_date or (execution_date - timedelta(days=1))
+def handler(SourceModel, TargetModel, execution_date, next_execution_date, **kwargs):
     connection = SqliteHook()
     Session = sessionmaker(
         bind=connection.get_sqlalchemy_engine(), expire_on_commit=False
     )
     session = Session()
     return iteration_handler(
-        SourceModel.iterate_rows(Session(), prev_execution_date, execution_date),
+        SourceModel.iterate_rows(Session(), execution_date, next_execution_date),
         lambda x: process_record(session, execution_date, TargetModel, x),
         session.rollback,
     )
