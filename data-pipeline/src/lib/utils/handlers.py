@@ -1,4 +1,5 @@
 from logging import warning
+import traceback
 
 
 def iteration_handler(iterator, handler, error_callback=None):
@@ -10,8 +11,8 @@ def iteration_handler(iterator, handler, error_callback=None):
             handler(item)
             success += 1
         except Exception as err:
-            warning(err)
-            error_callback()
+            warning(traceback.format_exc())
+            error_callback(item)
     if total != 0 and success == 0:
         raise Exception("No records were processed successfully")
     return success, total
