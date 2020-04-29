@@ -39,7 +39,7 @@ services:
             - ./src/plugins:/usr/local/airflow/plugins
             - ./airflow-requirements.txt:/requirements.txt
             - ./out:/usr/local/airflow/artifacts
-            - ./db:/usr/local/airflow/db
+            - ./:/usr/local/airflow/db
         ports:
             - "${AIRFLOW_PORT}:8080"
         command: webserver
