@@ -17,7 +17,7 @@ class WithTimestamps:
 
 
 class WithUUID:
-    UUID = Column(String(36))
+    UUID = Column(String(36), nullable=False)
 
     def get_id(self):
         raise NotImplemented
