@@ -1,5 +1,6 @@
 from datetime import datetime
 import json
+from logging import warning
 import os
 from airflow.hooks.sqlite_hook import SqliteHook
 from sqlalchemy.orm import sessionmaker
@@ -20,10 +21,15 @@ def handler(source_dir, Model, execution_date, **kwargs):
     connection = SqliteHook()
     Session = sessionmaker(bind=connection.get_sqlalchemy_engine())
     session = Session()
+
+    def handle_error(file_path):
+        session.rollback()
+        warning(file_path)
+
     return iteration_handler(
         os.listdir(source_dir),
         lambda x: process_record(
             session, execution_date, Model, os.path.join(source_dir, x)
         ),
-        lambda: session.rollback,
+        handle_error,
     )
