@@ -60,6 +60,7 @@ class MayaStakeholder(WithTimestamps, DbModel, Base):
     @classmethod
     def from_dict(cls, dictionary, **kwargs):
         dictionary = rename(dictionary, "Date", "Date2")
+        dictionary["CurrentAmount"] = int(dictionary["CurrentAmount"].replace(",", ""))
         dictionary["date"] = datetime.fromisoformat(dictionary["date"])
         dictionary["Date2"] = datetime.strptime(dictionary["Date2"], "%d/%m/%Y")
         return cls(**dictionary, **kwargs)
