@@ -17,6 +17,7 @@ from models.sql.normalized.person import Person
 
 def create_path(path_id, source_url, DbModel):
     create_files = PythonOperator(
+        retries=3,
         task_id=f"{path_id}_create_files",
         python_callable=json_stream_to_file,
         provide_context=True,
@@ -80,7 +81,7 @@ with DAG(
     "maya_stakeholders",
     catchup=True,
     start_date=datetime(2019, 1, 1),
-    end_date=datetime(2019, 1, 7),
+    end_date=datetime(2019, 4, 1),
     schedule_interval="@daily",
     params={"dir_name": "stakeholders"},
     max_active_runs=2,

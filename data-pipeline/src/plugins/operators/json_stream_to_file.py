@@ -36,8 +36,6 @@ def handler(source_url, dest_dir, execution_date, prev_execution_date, **kwags):
             with open(os.path.join(dest_dir, h + ".json"), "w") as fp:
                 json.dump(o, fp, ensure_ascii=False)
             success += 1
-        elif date < prev_execution_date - timedelta(days=365):
-            break
         else:
             continue
     return success
