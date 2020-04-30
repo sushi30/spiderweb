@@ -20,3 +20,8 @@ starting alembic
 ```shell script
 alembic upgrade head
 ```
+
+create new migration:
+```shell script
+alembic revision --autogenerate -m "create table_name"
+```
