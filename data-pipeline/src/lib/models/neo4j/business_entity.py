@@ -1,9 +1,8 @@
-from neomodel import StructuredNode, StringProperty, RelationshipTo
-from models.neo4j import Firm
-from models.neo4j.stakeholder_rel import StakeholderRel
+from neomodel import DateTimeFormatProperty, StringProperty
+from .neo_model import NeoModel
 
 
-class BusinessEntity(StructuredNode):
-    id = StringProperty(unique_index=True)
-
-    stakeholder = RelationshipTo(Firm, "STAKEHOLDER", model=StakeholderRel)
+class BusinessEntity(NeoModel):
+    uuid = StringProperty(unique_index=True)
+    created_at = DateTimeFormatProperty(format="%Y-%m-%d %H:%M:%S")
+    updated_at = DateTimeFormatProperty(default_now=True, format="%Y-%m-%d %H:%M:%S")

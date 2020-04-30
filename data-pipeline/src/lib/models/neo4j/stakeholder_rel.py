@@ -1,4 +1,10 @@
-from neomodel import FloatProperty, StructuredRel, DateProperty, IntegerProperty, StringProperty
+from neomodel import (
+    FloatProperty,
+    StructuredRel,
+    DateProperty,
+    IntegerProperty,
+    StringProperty,
+)
 
 
 class StakeholderRel(StructuredRel):
