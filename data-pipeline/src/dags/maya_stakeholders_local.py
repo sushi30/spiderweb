@@ -83,6 +83,7 @@ with DAG(
     end_date=datetime(2019, 1, 7),
     schedule_interval="@daily",
     params={"dir_name": "stakeholders"},
+    max_active_runs=2,
     default_args={"retries": 0, "depends_on_past": True},
 ) as dag:
     create_path(
