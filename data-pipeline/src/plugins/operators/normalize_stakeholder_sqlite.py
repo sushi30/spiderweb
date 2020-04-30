@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from airflow.hooks.sqlite_hook import SqliteHook
 from sqlalchemy.orm import sessionmaker
 from models.sql.normalized import Stakeholder
