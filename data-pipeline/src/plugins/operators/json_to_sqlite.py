@@ -22,7 +22,7 @@ def handler(source_dir, Model, execution_date, **kwargs):
     Session = sessionmaker(bind=connection.get_sqlalchemy_engine())
     session = Session()
 
-    def handle_error(file_path):
+    def handle_error(file_path, *_, **__):
         session.rollback()
         warning(file_path)
 

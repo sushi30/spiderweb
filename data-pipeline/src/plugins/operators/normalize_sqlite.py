@@ -18,8 +18,12 @@ def handler(SourceModel, TargetModel, execution_date, next_execution_date, **kwa
         bind=connection.get_sqlalchemy_engine(), expire_on_commit=False
     )
     session = Session()
+
+    def handle_error(*_, **__):
+        session.rollback()
+
     return iteration_handler(
         SourceModel.iterate_rows(Session(), execution_date, next_execution_date),
         lambda x: process_record(session, execution_date, TargetModel, x),
-        session.rollback,
+        handle_error,
     )
