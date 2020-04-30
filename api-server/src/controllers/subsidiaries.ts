@@ -5,14 +5,15 @@ export async function getSubsidiaries(uuid: string) {
   const [nodes, edges] = await Promise.all([
     session1
       .run(
-        `MATCH (s:Person)-[*]->(f)
+        `
+    MATCH (s:Person)
     WHERE s.uuid={uuid}
-    RETURN f
-    UNION ALL MATCH (s:Person)
+    RETURN s as f
+    UNION ALL MATCH (s:Person)-[*]->(f)
     WHERE s.uuid={uuid}
-    RETURN s as f`,
+    RETURN f`,
         {
-          uuid
+          uuid,
         }
       )
       .then(
@@ -29,20 +30,20 @@ export async function getSubsidiaries(uuid: string) {
         WHERE id(r) in rels
         RETURN {start: a.uuid, end: b.uuid, props: r}`,
         {
-          uuid
+          uuid,
         }
       )
       .then(({ records }) =>
         records.map(({ _fields: [{ start, end, props: { properties } }] }) => ({
           start,
           end,
-          properties
+          properties,
         }))
       )
-      .finally(() => session2.close())
+      .finally(() => session2.close()),
   ]);
   return {
     nodes,
-    edges
+    edges,
   };
 }
