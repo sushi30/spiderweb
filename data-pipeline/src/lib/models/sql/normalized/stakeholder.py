@@ -38,6 +38,8 @@ class Stakeholder(WithTimestamps, DbModel, Base):
             firm = session.query(Firm).get(
                 (row.HeaderMisparBaRasham, "israeli_company_registrar")
             )
+            if firm.UUID == holder.UUID:
+                return
             return cls(
                 **dict(
                     HOLDER=holder.UUID,
