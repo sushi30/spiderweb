@@ -26,10 +26,13 @@ def handler(source_dir, Model, execution_date, **kwargs):
         session.rollback()
         warning(file_path)
 
-    return iteration_handler(
-        os.listdir(source_dir),
-        lambda x: process_record(
-            session, execution_date, Model, os.path.join(source_dir, x)
-        ),
-        handle_error,
-    )
+    if os.path.exists(source_dir):
+        return iteration_handler(
+            os.listdir(source_dir),
+            lambda x: process_record(
+                session, execution_date, Model, os.path.join(source_dir, x)
+            ),
+            handle_error,
+        )
+    else:
+        return 0
