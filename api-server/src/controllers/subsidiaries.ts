@@ -1,10 +1,9 @@
 import g from "../globals";
 
 export async function getSubsidiariesGraph(uuid: string) {
-  const session1 = g.neo4j;
-  const session2 = g.neo4j;
+  const { neo4j } = g;
   const [nodes, edges] = await Promise.all([
-    session1
+    neo4j
       .run(
         `
     MATCH (s:Person)
@@ -20,9 +19,8 @@ export async function getSubsidiariesGraph(uuid: string) {
       .then(
         ({ records }) =>
           records.map(({ _fields: [{ properties }] }) => properties) as any
-      )
-      .finally(() => session1.close()),
-    session2
+      ),
+    neo4j
       .run(
         `MATCH p=(s:Person)-[*]->(f) WHERE s.uuid={uuid}
       UNWIND relationships(p) as rel
@@ -40,8 +38,7 @@ export async function getSubsidiariesGraph(uuid: string) {
           end,
           properties,
         }))
-      )
-      .finally(() => session2.close()),
+      ),
   ]);
   return {
     nodes,

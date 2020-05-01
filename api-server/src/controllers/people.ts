@@ -6,8 +6,7 @@ export async function getPerson(personUuid: string) {
     .run("MATCH (f:Person) WHERE f.uuid={uuid} RETURN f", {
       uuid: personUuid,
     })
-    .then(({ records }) => records?.[0]?._fields?.[0]?.properties)
-    .finally(() => neo4j.close());
+    .then(({ records }) => records?.[0]?._fields?.[0]?.properties);
 }
 
 export async function getDirectControl(personUuid: string) {
@@ -22,6 +21,5 @@ export async function getDirectControl(personUuid: string) {
           ...properties,
           ...p2,
         })) as any
-    )
-    .finally(() => neo4j.close());
+    );
 }
