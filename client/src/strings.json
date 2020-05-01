@@ -1,0 +1,9 @@
+{
+  "people": {
+    "direct": {
+      "columns": {
+        "name": "שם"
+      }
+    }
+  }
+}

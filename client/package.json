@@ -5,9 +5,12 @@
   "dependencies": {
     "@material-ui/core": "^4.9.12",
     "clsx": "^1.1.0",
+    "flat": "^5.0.0",
     "next": "^9.3.6",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "react-intl": "^4.5.1",
+    "swr": "^0.2.0"
   },
   "scripts": {
     "dev": "next",
@@ -16,10 +19,12 @@
     "post-update": "echo \"codesandbox preview only, need an update\" && yarn upgrade --latest"
   },
   "devDependencies": {
+    "@types/flat": "^5.0.0",
     "@types/next": "^9.0.0",
     "@types/node": "^13.13.4",
     "@types/react": "^16.9.34",
     "@types/react-dom": "^16.9.7",
+    "dotenv": "^8.2.0",
     "prettier": "^2.0.5",
     "typescript": "^3.8.3"
   }

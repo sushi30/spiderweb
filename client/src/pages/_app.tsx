@@ -3,7 +3,10 @@ import Head from "next/head";
 import { AppProps } from "next/app";
 import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
+import flatten from "flat";
 import theme from "../theme";
+import { IntlProvider } from "react-intl";
+import strings from "../strings.json";
 
 export default function MyApp(props: AppProps) {
   const { Component, pageProps } = props;
@@ -27,7 +30,9 @@ export default function MyApp(props: AppProps) {
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Component {...pageProps} />
+        <IntlProvider locale="he" messages={flatten(strings)}>
+          <Component {...pageProps} />
+        </IntlProvider>
       </ThemeProvider>
     </React.Fragment>
   );

@@ -1,5 +1,6 @@
 import g from "../globals";
-export async function getSubsidiaries(uuid: string) {
+
+export async function getSubsidiariesGraph(uuid: string) {
   const session1 = g.neo4j;
   const session2 = g.neo4j;
   const [nodes, edges] = await Promise.all([
