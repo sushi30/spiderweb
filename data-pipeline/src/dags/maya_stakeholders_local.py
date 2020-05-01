@@ -8,26 +8,13 @@ from operators.normalize_stakeholder_sqlite import (
 )
 from operators.extract_firm_sqlite import handler as extract_firm_sqlite
 from operators.normalize_sqlite import handler as normalize_sqlite
-from operators.json_stream_to_file import handler as json_stream_to_file
 from operators.json_to_sqlite import handler as json_to_sqlite
 from models.sql.maya_stakeholder import MayaStakeholder
 from models.sql.normalized.firm import Firm
 from models.sql.normalized.person import Person
 
 
-def create_path(path_id, source_url, DbModel):
-    create_files = PythonOperator(
-        retries=3,
-        task_id=f"{path_id}_create_files",
-        python_callable=json_stream_to_file,
-        provide_context=True,
-        depends_on_past=False,
-        op_kwargs={
-            "source_url": source_url,
-            "dest_dir": "./artifacts/{{ params.dir_name }}/{{ ts_nodash }}",
-        },
-    )
-
+def create_path(path_id, DbModel):
     insert_to_sqlite = PythonOperator(
         task_id=f"{path_id}_json_to_sqlite",
         python_callable=json_to_sqlite,
@@ -70,7 +57,7 @@ def create_path(path_id, source_url, DbModel):
         op_kwargs={"SourceModel": Stakeholder},
     )
 
-    create_files >> insert_to_sqlite >> normalizers
+    insert_to_sqlite >> normalizers
     insert_to_sqlite >> extract_firm
     extract_firm >> normalize_stakeholder
     normalizers >> normalize_stakeholder
@@ -87,8 +74,4 @@ with DAG(
     max_active_runs=2,
     default_args={"retries": 0, "depends_on_past": True},
 ) as dag:
-    create_path(
-        path_id="maya_stakeholders",
-        DbModel=MayaStakeholder,
-        source_url="https://next.obudget.org/datapackages/maya/maya_company_stakeholder_list/data/maya_stakeholder_list.json",
-    )
+    create_path(path_id="maya_stakeholders", DbModel=MayaStakeholder)
