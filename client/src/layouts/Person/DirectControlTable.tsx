@@ -8,6 +8,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import { useIntl } from "react-intl";
+import { Typography } from "@material-ui/core";
 
 const useStyles = makeStyles({ table: {} });
 
@@ -21,30 +22,33 @@ export default function DirectControlTable({ rows = [] }: Props) {
     useIntl().formatMessage({ id: `people.direct.${id}` });
 
   return (
-    <TableContainer component={Paper}>
-      <Table className={classes.table}>
-        <TableHead>
-          <TableRow>
-            <TableCell>{getLocaleString("columns.name")}</TableCell>
-            <TableCell>{getLocaleString("columns.percent")}</TableCell>
-            <TableCell>{getLocaleString("columns.numStocks")}</TableCell>
-            <TableCell>{getLocaleString("columns.notes")}</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row: any) => (
-            <TableRow key={row.name}>
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell align="right">{row.capitalPercent}</TableCell>
-              <TableCell align="right">{row.fat}</TableCell>
-              <TableCell align="right">{row.carbs}</TableCell>
-              <TableCell align="right">{row.protein}</TableCell>
+    <React.Fragment>
+      <Typography variant="h4">{getLocaleString("title")}</Typography>
+      <TableContainer component={Paper}>
+        <Table className={classes.table}>
+          <TableHead>
+            <TableRow>
+              <TableCell>{getLocaleString("columns.name")}</TableCell>
+              <TableCell>{getLocaleString("columns.percent")}</TableCell>
+              <TableCell>{getLocaleString("columns.numStocks")}</TableCell>
+              <TableCell>{getLocaleString("columns.notes")}</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {rows.map((row: any) => (
+              <TableRow key={row.name}>
+                <TableCell component="th" scope="row">
+                  {row.name}
+                </TableCell>
+                <TableCell align="right">{row.capitalPercent}</TableCell>
+                <TableCell align="right">{row.fat}</TableCell>
+                <TableCell align="right">{row.carbs}</TableCell>
+                <TableCell align="right">{row.protein}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </React.Fragment>
   );
 }

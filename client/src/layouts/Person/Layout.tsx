@@ -9,8 +9,8 @@ export interface Props {
 
 export default function Layout({ data }: Props) {
   return (
-    <Container maxWidth="sm">
-      <Typography variant="h4" component="h1" gutterBottom>
+    <Container maxWidth="md">
+      <Typography variant="h3" gutterBottom>
         {data.person.name}
       </Typography>
       <DirectControlTable rows={data.direct} />
