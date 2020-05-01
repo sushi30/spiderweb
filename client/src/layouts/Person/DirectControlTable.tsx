@@ -36,14 +36,11 @@ export default function DirectControlTable({ rows = [] }: Props) {
           </TableHead>
           <TableBody>
             {rows.map((row: any) => (
-              <TableRow key={row.name}>
-                <TableCell component="th" scope="row">
-                  {row.name}
-                </TableCell>
-                <TableCell align="right">{row.capitalPercent}</TableCell>
-                <TableCell align="right">{row.fat}</TableCell>
-                <TableCell align="right">{row.carbs}</TableCell>
-                <TableCell align="right">{row.protein}</TableCell>
+              <TableRow>
+                <TableCell component="th">{row.name}</TableCell>
+                <TableCell>{row.capitalPercent}</TableCell>
+                <TableCell>{row.stockAmount}</TableCell>
+                <TableCell>{row.notes}</TableCell>
               </TableRow>
             ))}
           </TableBody>

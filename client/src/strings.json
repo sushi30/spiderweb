@@ -1,9 +1,14 @@
 {
   "people": {
     "direct": {
+      "title": "החזקה ישירה",
       "columns": {
-        "name": "שם"
+        "name": "שם",
+        "percent": "אחוז החזקה",
+        "numStocks": "מניות",
+        "notes": "הערות"
       }
     }
-  }
+  },
+  "search": { "search": "חיפוש" }
 }

@@ -20,6 +20,7 @@ export async function getDirectControl(personUuid: string) {
         records.map(({ _fields: [{ properties }, { properties: p2 }] }) => ({
           ...properties,
           ...p2,
+          stock_amount: p2.stock_amount.low,
         })) as any
     );
 }

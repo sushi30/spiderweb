@@ -8,6 +8,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Link from "../../components/Link";
+import { useIntl } from "react-intl";
 
 export interface Props {
   getResults: (query: string) => Promise<void>;
@@ -16,6 +17,8 @@ export interface Props {
 }
 
 export default function Layout({ getResults, results, loading }: Props) {
+  const getLocalString = (id: string) =>
+    useIntl().formatMessage({ id: `search.${id}` });
   return (
     <Container maxWidth="md">
       <Formik
@@ -25,7 +28,7 @@ export default function Layout({ getResults, results, loading }: Props) {
         {() => (
           <Form>
             <Field component={TextField} name="query" />
-            <Button type="submit">Search</Button>
+            <Button type="submit">{getLocalString("search")}</Button>
           </Form>
         )}
       </Formik>

@@ -7,6 +7,7 @@ import flatten from "flat";
 import theme from "../theme";
 import { IntlProvider } from "react-intl";
 import strings from "../strings.json";
+import { RTL } from "./RTL";
 
 export default function MyApp(props: AppProps) {
   const { Component, pageProps } = props;
@@ -29,10 +30,12 @@ export default function MyApp(props: AppProps) {
         />
       </Head>
       <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <IntlProvider locale="he" messages={flatten(strings)}>
-          <Component {...pageProps} />
-        </IntlProvider>
+        <RTL>
+          <CssBaseline />
+          <IntlProvider locale="en" messages={flatten(strings)}>
+            <Component {...pageProps} />
+          </IntlProvider>
+        </RTL>
       </ThemeProvider>
     </React.Fragment>
   );
