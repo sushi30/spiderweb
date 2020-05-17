@@ -1,3 +1,4 @@
+local.db
 
 # Created by https://www.gitignore.io/api/python,pycharm,virtualenv
 # Edit at https://www.gitignore.io/?templates=python,pycharm,virtualenv
@@ -107,7 +108,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/

@@ -1,0 +1,52 @@
+version: '3.7'
+services:
+    postgres:
+        image: postgres:9.6
+        environment:
+            - POSTGRES_USER=airflow
+            - POSTGRES_PASSWORD=airflow
+            - POSTGRES_DB=airflow
+        logging:
+            options:
+                max-size: 10m
+                max-file: "3"
+
+    neo4j:
+        image: neo4j:3.5.3
+        environment:
+            - NEO4J_AUTH=none
+        ports:
+            - "${BOLT_PORT}:7687"
+            - "${NEO4J_HTTP_PORT}:7474"
+            - "${NEO4J_HTTPS_PORT}:7473"
+
+    webserver:
+        image: puckel/docker-airflow:latest
+        restart: always
+        depends_on:
+            - postgres
+        environment:
+            - LOAD_EX=n
+            - EXECUTOR=Local
+            - AIRFLOW_CONN_SQLITE_DEFAULT=sqlite:////usr/local/airflow/db/local.db
+            - AIRFLOW_CONN_NE4J_DEFAULT=bolt://neo4j:7687
+            - PYTHONPATH=/usr/local/airflow/lib
+        logging:
+            options:
+                max-size: 10m
+                max-file: "3"
+        volumes:
+            - ./src/dags:/usr/local/airflow/dags
+            - ./src/lib:/usr/local/airflow/lib
+            - ./src/plugins:/usr/local/airflow/plugins
+            - ./airflow-requirements.txt:/requirements.txt
+            - ./out:/usr/local/airflow/artifacts
+            - ./:/usr/local/airflow/db
+        ports:
+            - "${AIRFLOW_PORT}:8080"
+        command: webserver
+        healthcheck:
+            test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
+            interval: 30s
+            timeout: 30s
+            retries: 3

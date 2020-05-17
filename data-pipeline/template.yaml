@@ -9,10 +9,7 @@ Resources:
   AirflowArtifactsBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Join
-        - "-"
-        - - spiderweb-airflow
-          - !Ref env
+      BucketName: !Sub "spiderweb-airflow-${env}"
       LifecycleConfiguration:
         Rules:
           - ExpirationInDays: 7
