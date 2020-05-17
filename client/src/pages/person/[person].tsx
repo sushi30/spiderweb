@@ -1,28 +1,40 @@
 import React from "react";
-import useSWR from "swr";
-import { useRouter } from "next/router";
 import Layout from "../../layouts/Person";
+import { Promise } from "bluebird";
+import fetch from "isomorphic-unfetch";
+import path from "path";
+import fs from "fs";
 
-function useData(uuid: string) {
-  const direct = useSWR(`/v1/people/${uuid}/direct`, (url) =>
-    fetch(process.env.BACKEND + url).then((res) => res.json())
-  );
-  const person = useSWR(`/v1/people/${uuid}`, (url) =>
-    fetch(process.env.BACKEND + url).then((res) => res.json())
-  );
-  return { direct, person };
+export default function Person({ direct, person }) {
+  return <Layout data={{ direct: direct, person: person }} />;
 }
 
-export default function Person() {
-  const { person: uuid } = useRouter().query;
+export async function getStaticProps({ params }) {
+  const { person: uuid } = params;
+  return {
+    props: await Promise.props({
+      direct: fetch(
+        `${process.env.BACKEND}/v1/people/${uuid}/direct`
+      ).then((res) => res.json()),
+      person: fetch(`${process.env.BACKEND}/v1/people/${uuid}`).then((res) =>
+        res.json()
+      ),
+    }),
+  };
+}
 
-  const { direct, person } = useData(uuid as string);
-
-  return direct.error ? (
-    <div>{direct.error.message}</div>
-  ) : direct.data && person.data ? (
-    <Layout data={{ direct: direct.data, person: person.data }} />
-  ) : (
-    <div>loading</div>
+export async function getStaticPaths() {
+  const persons = JSON.parse(
+    fs
+      .readFileSync(path.join(process.cwd(), "static", "person.json"))
+      .toString()
   );
+  return {
+    paths: persons.map((person) => ({
+      params: {
+        person,
+      },
+    })),
+    fallback: false,
+  };
 }

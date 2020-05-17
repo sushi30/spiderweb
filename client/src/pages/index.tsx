@@ -5,20 +5,48 @@ import Box from "@material-ui/core/Box";
 import ProTip from "../components/ProTip";
 import Link from "../components/Link";
 import Copyright from "../components/Copyright";
+import fetch from "isomorphic-unfetch";
+import fs from "fs";
+import path from "path";
+import { List, ListItem, ListItemText } from "@material-ui/core";
 
-export default function Index() {
+interface Props {
+  data: { name: string; uuid: string }[];
+}
+
+export default function Index({ data }: Props) {
+  data.sort((a, b) => (a.name > b.name ? 1 : -1));
   return (
-    <Container maxWidth="sm">
-      <Box my={4}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Next.js with TypeScript example
-        </Typography>
-        <Link href="/about" color="secondary">
-          Go to the about page
-        </Link>
-        <ProTip />
-        <Copyright />
-      </Box>
+    <Container maxWidth="md">
+      <List>
+        {data.map(({ name, uuid }) => (
+          <ListItem>
+            <Link href={`/person/${uuid}`}>
+              <ListItemText primary={name} />
+            </Link>
+          </ListItem>
+        ))}
+      </List>
     </Container>
   );
+}
+
+export async function getStaticProps() {
+  const ids = JSON.parse(
+    fs
+      .readFileSync(path.join(process.cwd(), "static", "person.json"))
+      .toString()
+  );
+  return {
+    props: {
+      data: await Promise.all(
+        ids.map(async (uuid) => ({
+          name: await fetch(`${process.env.BACKEND}/v1/people/${uuid}`)
+            .then((res) => res.json())
+            .then(({ name }) => name),
+          uuid,
+        }))
+      ),
+    },
+  };
 }

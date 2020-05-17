@@ -7,7 +7,7 @@ import flatten from "flat";
 import theme from "../theme";
 import { IntlProvider } from "react-intl";
 import strings from "../strings.json";
-import { RTL } from "./RTL";
+import RTL from "../components/RTL";
 
 export default function MyApp(props: AppProps) {
   const { Component, pageProps } = props;
