@@ -1,9 +1,9 @@
-name: Build
+name: Format Checker
 
-on: [push]
+on: [pull-request]
 
 jobs:
-  build:
+  lint-black:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -17,4 +17,4 @@ jobs:
     - name: Black Code Formatter
       uses: jpetrucciani/black-check@master
       with:
-        path: data-pipeline
+        path: .
