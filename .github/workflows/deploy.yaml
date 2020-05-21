@@ -9,7 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
     outputs:
       package: ${{ steps.package.outputs.test }}
     steps:
