@@ -1,4 +1,4 @@
-name: Format Checker
+name: Deploy
 
 on:
   push:
