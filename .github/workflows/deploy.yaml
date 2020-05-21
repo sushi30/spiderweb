@@ -10,8 +10,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
-      matrix:
-        python-version: [3.5, 3.6, 3.7, 3.8]
     outputs:
       package: ${{ steps.package.outputs.test }}
     steps:
@@ -19,7 +17,7 @@ jobs:
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: 3.8
     - name: Cloudformation Package
       id: package
       run: echo "::set-output name=test::hello"
@@ -27,13 +25,10 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.5, 3.6, 3.7, 3.8]
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: 3.8
       - run: echo ${{needs.build.outputs.package}}
