@@ -1,6 +1,6 @@
 name: Format Checker
 
-on: [pull-request]
+on: [pull_request]
 
 jobs:
   lint-black:
