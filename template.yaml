@@ -9,10 +9,25 @@ Parameters:
     AllowedValues:
       - dev
       - prod
-
   prefix:
     Type: String
     Default: "Spiderweb"
+  postgresUser:
+    NoEcho: 'true'
+    Description: Username for Postgres database access
+    Type: String
+    MinLength: '1'
+    MaxLength: '16'
+    AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+    ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
+  postgresPassword:
+    Type: String
+    NoEcho: 'true'
+    Description: Password Postgres database access
+    MinLength: '8'
+    MaxLength: '41'
+    AllowedPattern: '[a-zA-Z0-9]*'
+    ConstraintDescription: must contain only alphanumeric characters.
 
 Resources:
   DataPipeline:
@@ -21,3 +36,5 @@ Resources:
       TemplateURL: ./data-pipeline/template.yaml
       Parameters:
         env: !Ref env
+        DBUsername: !Ref postgresUser
+        DBPassword: !Ref postgresPassword

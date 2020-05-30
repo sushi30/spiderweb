@@ -4,6 +4,23 @@ Parameters:
     AllowedValues:
       - dev
       - prod
+  DBUsername:
+    NoEcho: 'true'
+    Description: Username for Postgres database access
+    Type: String
+    MinLength: '1'
+    MaxLength: '16'
+    AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+    ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
+  DBPassword:
+    NoEcho: 'true'
+    Description: Password Postgres database access
+    Type: String
+    MinLength: '8'
+    MaxLength: '41'
+    AllowedPattern: '[a-zA-Z0-9]*'
+    ConstraintDescription: must contain only alphanumeric characters.
+
 
 Resources:
   AirflowArtifactsBucket:
@@ -14,6 +31,20 @@ Resources:
         Rules:
           - ExpirationInDays: 7
             Status: Enabled
+  RDSCluster:
+      Type: 'AWS::RDS::DBCluster'
+      Properties:
+        MasterUsername: !Ref DBUsername
+        MasterUserPassword: !Ref DBPassword
+        DBClusterIdentifier: spiderweb-postgres
+        Engine: aurora-postgresql
+        EngineVersion: 11.6
+        EngineMode: serverless
+        ScalingConfiguration:
+          AutoPause: true
+          MinCapacity: 1
+          MaxCapacity: 1
+          SecondsUntilAutoPause: 120
 
 Outputs:
   ExecutionBucket:
