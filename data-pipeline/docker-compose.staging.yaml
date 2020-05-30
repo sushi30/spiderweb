@@ -42,6 +42,7 @@ services:
             - EXECUTOR=Local
             - AIRFLOW_CONN_SQLITE_DEFAULT=${DB_URL}
             - AIRFLOW_CONN_NE4J_DEFAULT=bolt://neo4j:7687
+            - AIRFLOW__WEBSERVER__RBAC=true
             - PYTHONPATH=/usr/local/airflow/lib
         logging:
             options:
