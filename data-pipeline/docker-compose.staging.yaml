@@ -29,7 +29,7 @@ services:
             GIT_SYNC_REV: "FETCH_HEAD"
             GIT_SYNC_WAIT: "10"
         volumes:
-            - ./../:/git:z"
+            - ./../:/git"
         restart: always
 
     webserver:
