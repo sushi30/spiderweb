@@ -28,8 +28,9 @@ services:
             GIT_SYNC_BRANCH: "master"
             GIT_SYNC_REV: "FETCH_HEAD"
             GIT_SYNC_WAIT: "10"
+            GIT_SYNC_PERMISSIONS: 0
         volumes:
-            - ${REPO_PATH}:/git"
+            - ${REPO_PATH}:/git
         restart: always
 
     webserver:
