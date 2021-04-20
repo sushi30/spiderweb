@@ -65,7 +65,7 @@ pendulum==1.4.4
 pluggy==0.13.1
 prison==0.1.2
 psutil==5.7.0
-py==1.8.1
+py==1.10.0
 Pygments==2.6.1
 PyJWT==1.7.1
 pyparsing==2.4.6
